@@ -1,0 +1,8 @@
+<div>
+  <h2>Current Player: {{ currentPlayer }}</h2>
+  <app-grid [grid]="grid" (cellClicked)="handleCellClick($event)"></app-grid>
+  <div *ngIf="winner">
+    <h2>{{ winner }} wins!</h2>
+    <button (click)="restartGame()">Restart</button>
+  </div>
+</div>

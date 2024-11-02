@@ -1,0 +1,7 @@
+<div class="grid">
+  <div *ngFor="let row of grid; let rowIndex = index" class="row">
+    <div *ngFor="let cell of row; let colIndex = index" class="cell" (click)="onCellClicked(rowIndex, colIndex)">
+      {{ cell }}
+    </div>
+  </div>
+</div>

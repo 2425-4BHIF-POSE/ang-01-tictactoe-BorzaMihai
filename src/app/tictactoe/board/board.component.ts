@@ -10,27 +10,32 @@ import { GridComponent } from '../grid/grid.component';
   styleUrls: ['./board.component.scss']
 })
 export class BoardComponent {
-  currentPlayer: 'X' | 'O' = 'X';
-  grid: string[][] = [
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', '']
-  ];
-  winner: string | null = null;
+  currentPlayer: Player = Player.X;
+  grid: string[][] = this.initializeGrid();
+  winner: Player | null = null;
 
-  handleCellClick({ row, col }: { row: number, col: number }) {
+  private initializeGrid(): string[][] {
+    return Array(3).fill(null).map(() => Array(3).fill(''));
+  }
+
+  handleCellClick({ row, col }: CellClick): void {
     if (!this.grid[row][col] && !this.winner) {
       this.grid[row][col] = this.currentPlayer;
       if (this.checkWinner()) {
         this.winner = this.currentPlayer;
       } else {
-        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+        this.currentPlayer = this.currentPlayer === Player.X ? Player.O : Player.X;
       }
     }
   }
 
   checkWinner(): boolean {
-    const lines = [
+    const winningLines = this.getWinningLines();
+    return winningLines.some(line => line.every(cell => cell === this.currentPlayer));
+  }
+
+  private getWinningLines(): string[][] {
+    return [
       // Rows
       [this.grid[0][0], this.grid[0][1], this.grid[0][2]],
       [this.grid[1][0], this.grid[1][1], this.grid[1][2]],
@@ -43,17 +48,21 @@ export class BoardComponent {
       [this.grid[0][0], this.grid[1][1], this.grid[2][2]],
       [this.grid[0][2], this.grid[1][1], this.grid[2][0]]
     ];
-
-    return lines.some(line => line.every(cell => cell === this.currentPlayer));
   }
 
-  restartGame() {
-    this.grid = [
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', '']
-    ];
-    this.currentPlayer = 'X';
+  restartGame(): void {
+    this.grid = this.initializeGrid();
+    this.currentPlayer = Player.X;
     this.winner = null;
   }
+}
+
+enum Player{
+  O = 'O',
+  X = 'X'
+}
+
+interface CellClick{
+  row: number;
+  col: number;
 }
